@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+
+from ..utilities.errors import VacationDaysShortageError
 from ..utilities.constants import FIXED_VACATION_DAYS_PAYOUT
 from .roles import Role
 
@@ -21,15 +23,21 @@ class Employee(ABC):
 
     def take_a_holiday(self) -> None:
         if self.vacation_days < 1:
-            print("No days left to take.")
-            return
+            raise VacationDaysShortageError(
+                requested_days=1,
+                remaining_days=self.vacation_days,
+                message="You don't have any holidays left. Now back to work, you!",
+            )
         self.vacation_days -= 1
-        print("Have fun on your holiday. Don't forget to check your emails!")
+        print(f"Have fun on your holiday, {self.name}! Don't forget to check your emails!")
 
     def payout_a_holiday(self) -> None:
         if self.vacation_days < FIXED_VACATION_DAYS_PAYOUT:
-            print("Not enough days left to take.")
-            return
+            raise VacationDaysShortageError(
+                requested_days=FIXED_VACATION_DAYS_PAYOUT,
+                remaining_days=self.vacation_days,
+                message="You don't have enough holidays left over for a payout",
+            )
         self.vacation_days -= FIXED_VACATION_DAYS_PAYOUT
         print(f"Paying out a holiday. Holidays left: {self.vacation_days}")
 
