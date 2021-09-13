@@ -15,5 +15,10 @@ def main() -> None:
     print(company.find_employees(role=Role.WORKER))
     print(company.find_employees(role=Role.INTERN))
 
+    for employee in company.employees:
+        employee.pay()
+    
+    company.employees[0].take_a_holiday()
+
 if __name__ == "__main__":
     main()
